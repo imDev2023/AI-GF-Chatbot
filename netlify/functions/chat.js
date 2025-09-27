@@ -128,7 +128,7 @@ exports.handler = async (event) => {
         const systemInstruction = generateSystemInstruction(userPreferences);
 
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-1.5-pro",
+            model: "gemini-1.5-flash",
             systemInstruction: systemInstruction
         });
 
