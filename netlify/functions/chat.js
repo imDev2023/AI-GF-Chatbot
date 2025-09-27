@@ -10,7 +10,8 @@ async function getGenAI() {
    if (!apiKey) {
      throw new Error('GOOGLE_AI_KEY is not set in environment variables');
    }
-   genAIInstance = new GoogleGenerativeAI(apiKey);
+   // Force API v1 so that 1.5 models resolve correctly
+   genAIInstance = new GoogleGenerativeAI(apiKey, { apiVersion: 'v1' });
    return genAIInstance;
 }
 
@@ -128,7 +129,7 @@ exports.handler = async (event) => {
         const systemInstruction = generateSystemInstruction(userPreferences);
 
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-1.5-flash",
+            model: "gemini-1.5-flash-latest",
             systemInstruction: systemInstruction
         });
 
