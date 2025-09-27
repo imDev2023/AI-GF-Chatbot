@@ -1,9 +1,18 @@
 // For local development
 require('dotenv').config();
 
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY);
+// Use dynamic import to support ESM-only packages on Netlify Functions
+let genAIInstance = null;
+async function getGenAI() {
+   if (genAIInstance) return genAIInstance;
+   const { GoogleGenerativeAI } = await import('@google/generative-ai');
+   const apiKey = process.env.GOOGLE_AI_KEY;
+   if (!apiKey) {
+     throw new Error('GOOGLE_AI_KEY is not set in environment variables');
+   }
+   genAIInstance = new GoogleGenerativeAI(apiKey);
+   return genAIInstance;
+}
 
 // Store conversations in memory (note: this resets on function cold start)
 const conversations = new Map();
@@ -90,6 +99,7 @@ exports.handler = async (event) => {
     }
 
     try {
+        const genAI = await getGenAI();
         const body = JSON.parse(event.body);
         const { message, userPreferences, conversationId } = body;
         
@@ -162,7 +172,7 @@ exports.handler = async (event) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ 
-                error: 'Internal server error',
+                error: error && error.message ? error.message : 'Internal server error',
                 text: `Sorry, I'm having some technical issues right now. Can you try again? 💔` 
             })
         };
