@@ -1,0 +1,16 @@
+{
+  "name": "romantic-chat",
+  "version": "1.0.0",
+  "description": "Personalized romantic chat application",
+  "type": "commonjs",
+  "scripts": {
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.15.0",
+    "dotenv": "^16.0.0"
+  },
+  "engines": {
+    "node": "18"
+  }
+}
